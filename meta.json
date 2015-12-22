@@ -36,5 +36,6 @@
             "title":"Shares"
         }
     ],
+    "icon": "linkedin",
     "title": "LinkedIn Get Company Page Stats" /* Required.A display name for the module */
 }
