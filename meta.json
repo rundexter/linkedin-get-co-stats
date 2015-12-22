@@ -4,23 +4,37 @@
 {
     //Required. Inputs the module expects.
     "inputs": [
-        //e.g.
-        /*
         {
-            "id": "from",
-            "title":"From"
+            "id": "id",
+            "title":"Company ID"
         }
-        */
     ],
     //Required. Outputs the module emits.
     "outputs": [
-      //e.g.
-      /*
         {
-            "id": "from",
-            "title":"From"
+            "id": "count",
+            "title":"Visitors"
+        },
+        {
+            "id": "statusUpdateStatistics",
+            "title":"Update Views"
+        },
+        {
+            "id": "engagement",
+            "title":"Engagement"
+        },
+        {
+            "id": "impressions",
+            "title":"Impressions"
+        },
+        {
+            "id": "likes",
+            "title":"Likes"
+        },
+        {
+            "id": "shares",
+            "title":"Shares"
         }
-      */
     ],
     "title": "LinkedIn Get Company Page Stats" /* Required.A display name for the module */
 }
