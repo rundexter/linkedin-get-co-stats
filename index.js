@@ -3,7 +3,7 @@ var Linkedin = require('node-linkedin')(),
     util = require('./util.js');
 
 var pickInputs = {
-        'id': 'id'
+        'id': { key: 'id', validate: { req: true } },
     },
     pickOutputs = {
         'count': 'followStatistics.count',
@@ -27,24 +27,6 @@ var pickInputs = {
     };
 
 module.exports = {
-
-    /**
-     * Authorize module.
-     *
-     * @param dexter
-     * @returns {*}
-     */
-    authModule: function (dexter) {
-        var accessToken = dexter.environment('linkedin_access_token');
-
-        if (accessToken)
-            return Linkedin.init(accessToken);
-
-        else
-            return false;
-    },
-
-
     /**
      * The main entry point for the Dexter module
      *
@@ -52,24 +34,19 @@ module.exports = {
      * @param {AppData} dexter Container for all data used in this workflow.
      */
     run: function(step, dexter) {
-        var linkedIn = this.authModule(dexter),
-            inputs = util.pickStringInputs(step, pickInputs);
+        var token = dexter.provider('linkedin').credentials('access_token'),
+            linkedIn = Linkedin.init(token),
+            inputs = util.pickInputs(step, pickInputs),
+            validateErrors = util.checkValidateErrors(inputs, pickInputs);
 
-        if (!linkedIn)
-            return this.fail('A [linkedin_access_token] environment need for this module.');
-
-        if (!inputs.id)
-            this.fail('A [id] need for this module');
+        if (validateErrors)
+            return this.fail(validateErrors);
 
         linkedIn.companies.company_stats(inputs.id, function(err, data) {
-            if (err)
-                this.fail(err);
-
-            else if (data.errorCode !== undefined)
-                this.fail(data.message || 'Error Code'.concat(data.errorCode));
-
+            if (err || (data && data.errorCode !== undefined))
+                this.fail(err || (data.message || 'Error Code: '.concat(data.errorCode)));
             else
-                this.complete(util.pickResult(data, pickOutputs));
+                this.complete(util.pickOutputs(data, pickOutputs));
 
         }.bind(this));
     }
